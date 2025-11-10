@@ -44,14 +44,14 @@ export default function Login() {
       <div className="h-12 m-2 items-center flex">
         <label className="flex gap-2">
           <span className="w-12 inline-block text-right ">用户名</span>
-          <input type="text" {...name} name="name"></input>
+          <input className="border rounded" type="text" {...name} name="name"></input>
         </label>
         {/* {...name}相当于把useInput解构，把onChange和value都拿出来 */}
       </div>
       <div className="h-12 m-2 items-center flex">
         <label className="flex gap-2">
           <span className="w-12 inline-block text-right ">密码</span>
-          <input type="password" {...password} name="password"></input>
+          <input className="border rounded" type="password" {...password} name="password"></input>
         </label>
       </div>
       {/* <div className="h-12 m-2 items-center flex">
