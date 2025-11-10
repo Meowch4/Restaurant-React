@@ -13,21 +13,23 @@ export type Order = {
   details: Array<
     {
       amount: number,
-      food: {
-        id: number,
-        rid: number,
-        name: string,
-        desc: string,
-        price: number,
-        img: string,
-        category: string,
-        status: 'pending' | 'confirmed' | 'completed'
-      }
+      food: Food,
     }
   >,
-  status: string,
+  status: 'pending' | 'confirmed' | 'completed',
   timestamp: string,
   totalPrice: number
+}
+
+export type Food = {
+  id: number,
+  rid: number,
+  name: string,
+  desc: string,
+  price: number,
+  img: string,
+  category: string,
+  status: 'on' | 'off',
 }
 
 class OrderManager {
@@ -46,7 +48,7 @@ class OrderManager {
   }
 }
 
- const OrderManageViewObserver =  observer(OrderManageView)
+const OrderManageViewObserver =  observer(OrderManageView)
 
 function OrderManageView() {
 
