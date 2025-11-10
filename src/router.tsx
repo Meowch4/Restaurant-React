@@ -7,6 +7,7 @@ import HomeView from './HomeView'
 import Login from "./Login";
 import IndexView from "./IndexView";
 import React from "react";
+import AddFoodView from "./AddFoodView";
 
 const OrderManageView = React.lazy(() => import('./OrderManageView'))
 const FoodManageView = React.lazy(() => import('./FoodManageView'))
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: 'foods',
         element: <FoodManageView />,
+      },
+      {
+        path: 'add-food',
+        element: <AddFoodView />
       },
       {
         path: 'desks',
