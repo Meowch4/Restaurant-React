@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 input {
-  @apply outline-none;
+  @apply outline-none focus:ring;
 }
 
 :root {
