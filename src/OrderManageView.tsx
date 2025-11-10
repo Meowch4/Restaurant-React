@@ -111,7 +111,7 @@ function OrderManageView() {
                   <button onClick={() => deleteOrder(order.id, idx)}>删除</button>
                 </div>
               </div>
-              <div className="border grow">
+              <div className="border grow p-2 rounded" >
                 <div className="flex justify-around ">
                   <span className="w-1/3 text-right">菜名</span>
                   <span className="w-1/3 text-right">数量</span>
@@ -122,7 +122,7 @@ function OrderManageView() {
                     <div key={idx} className="flex grow">
                       <span className="w-1/3 text-right">{ item.food.name }</span>
                       <span className="w-1/3 text-right">{ item.amount }</span>
-                      <span className="w-1/3 text-right">{ item.food.price }&times;{ item.amount }</span>
+                      <span className="w-1/3 text-right">{ item.food.price * item.amount }</span>
                     </div>
                   )
                 })}
