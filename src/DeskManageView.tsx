@@ -2,6 +2,8 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { Link } from "react-router"
 import QRCode from 'qrcode'
+import { makeAutoObservable } from "mobx"
+import { observer } from "mobx-react"
 
 
 
@@ -15,14 +17,19 @@ type Desk = {
 
 class DeskManager {
   desks: Desk[] = []
+  constructor() {
+    makeAutoObservable(this)
+  }
   addDesk(...desk: Desk[]) {
     this.desks.push(...desk)
+  }
+  deleteDesk(idx: number) {
+    this.desks.splice(idx, 1)
   }
 }
 
 
-
-export default function DeskManageView() {
+function DeskManageView() {
   const [manager] = useState(new DeskManager())
   const [ignore, setIgnore] = useState(false)
   const [qrcodes, setQrcodes] = useState<string[]>([])
@@ -37,10 +44,11 @@ export default function DeskManageView() {
     ).then(urls => {
       setQrcodes(urls)
     })
-  })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [manager.desks.length])
 
   useEffect(() => {
-    axios.get(`/api/restaurant/:rid/desk`)
+    axios.get(`/api/restaurant/1/desk`)
     .then(res => {
       if (ignore == false) {
         manager.addDesk(...res.data)
@@ -48,6 +56,11 @@ export default function DeskManageView() {
       setIgnore(true)
     })
   }, [ignore, manager])
+
+  function deleteDesk(desk: Desk, idx:number) {
+    axios.delete(`/api/restuarant/1/desk/${desk.id}`)
+    manager.deleteDesk(idx)
+  }
 
 
   return (
@@ -65,12 +78,12 @@ export default function DeskManageView() {
                 <div className="text-lg">人数：{ desk.capacity }</div>
                 <div className="flex gap-2">
                   <button>编辑</button>
-                  <button>删除</button>
+                  <button onClick={() => deleteDesk(desk, idx)}>删除</button>
                   <button>打印二维码</button>
                 </div>
               </div>
               <div className="p-2">
-                <img src={qrcodes[idx]} alt="" className="w-24 h-24" />
+                <img data-url={`https://10.3.3.3:5173/r/1/d/${desk.id}`} src={qrcodes[idx]} alt="" className="w-24 h-24" />
               </div>
             </div>
           )
@@ -79,3 +92,6 @@ export default function DeskManageView() {
     </div>
   )
 }
+
+const DeskManageViewObserver = observer(DeskManageView)
+export default DeskManageViewObserver
