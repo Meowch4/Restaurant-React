@@ -56,6 +56,7 @@ export default function AddFoodView() {
           <input type="file" className="mx-2" ref={imgInputRef}></input>
         </div>
         <button onClick={addFood}>提交</button>
+        <button onClick={() => navigate('/home/desks')}>取消</button>
       </form>
     </div>
   )
