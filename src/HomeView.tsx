@@ -40,7 +40,7 @@ export default function HomeView() {
         <div className="w-48 p-4 border-r flex flex-col gap-2 items-center shrink-0">
           <Link className="[&.active]:bg-slate-700 block p-2" to={'/home/orders'}>订单管理</Link>
           <Link className="[&.active]:bg-slate-700 block p-2" to={'/home/foods'}>菜品管理</Link>
-          <Link className="[&.active]:bg-slate-700 block p-2" to={'/home/desks'}>桌面管理</Link>
+          <Link className="[&.active]:bg-slate-700 block p-2" to={'/home/desks'}>餐桌管理</Link>
         </div>
         
         <div className="grow p-4 overflow-auto">
