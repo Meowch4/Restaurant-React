@@ -7,11 +7,12 @@ import HomeView from './HomeView'
 import Login from "./Login";
 import IndexView from "./IndexView";
 import React from "react";
-import AddFoodView from "./AddFoodView";
 
 const OrderManageView = React.lazy(() => import('./OrderManageView'))
 const FoodManageView = React.lazy(() => import('./FoodManageView'))
 const DeskManageView = React.lazy(() => import('./DeskManageView'))
+const AddDeskView = React.lazy(() => import('./AddDeskView'))
+const AddFoodView = React.lazy(() => import('./AddFoodView'))
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
         path: 'desks',
         element: <DeskManageView />,
       },
+      {
+        path: 'add-desk',
+        element: <AddDeskView />,
+      }
     ]
   },
   {
