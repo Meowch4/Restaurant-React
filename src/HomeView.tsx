@@ -31,18 +31,23 @@ export default function HomeView() {
   if (isLogin == false) return null
  
   return (
-    <div className="flex">
-      <div className="w-48 p-4 border-r flex flex-col gap-2 items-center">
-        <span className="font-bold text-lg">{ userInfo?.name }</span>
-        <Link className="block" to={'/home/orders'}>订单管理</Link>
-        <Link className="block" to={'/home/foods'}>菜品管理</Link>
-        <Link className="block" to={'/home/desks'}>桌面管理</Link>
+    <div className="h-full flex flex-col">
+      <h1 className="border-b flex justify-between items-center p-2">
+        <span className="font-bold text-lg">{ userInfo?.title }</span>
         <button>退出</button>
-      </div>
-      <div className="grow p-4">
-        <Suspense fallback={'Loading...'}>
-          <Outlet></Outlet>
-        </Suspense>
+      </h1>
+      <div className="flex grow overflow-hidden">
+        <div className="w-48 p-4 border-r flex flex-col gap-2 items-center shrink-0">
+          <Link className="[&.active]:bg-slate-700 block p-2" to={'/home/orders'}>订单管理</Link>
+          <Link className="[&.active]:bg-slate-700 block p-2" to={'/home/foods'}>菜品管理</Link>
+          <Link className="[&.active]:bg-slate-700 block p-2" to={'/home/desks'}>桌面管理</Link>
+        </div>
+        
+        <div className="grow p-4 overflow-auto">
+          <Suspense fallback={'Loading...'}>
+            <Outlet></Outlet>
+          </Suspense>
+        </div>
       </div>
     </div>
   )

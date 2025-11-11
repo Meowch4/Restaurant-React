@@ -65,7 +65,7 @@ function OrderManageView() {
     return () => {
       ignore = true
     }
-  }, [])
+  }, [manager])
 
   async function confirmOrder(idx:number) {
     const order = manager.orders[idx]
@@ -90,7 +90,9 @@ function OrderManageView() {
 
   return (
     <div>
-      订单管理页面
+      <span className="font-bold text-2xl">
+        订单管理
+      </span>
       <ul>
         {manager.orders.map((order, idx) => {
           return (

@@ -32,7 +32,7 @@ function FoodManageView() {
     return () => {
       ignore = true
     }
-  }, [])
+  }, [manager])
 
   return (
     <div>
