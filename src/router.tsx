@@ -8,6 +8,7 @@ import Login from "./Login";
 import IndexView from "./IndexView";
 import React from "react";
 import LandingPage from "./LandingPage";
+import OrderFoodPage from "./OrderFoodPage";
 
 const OrderManageView = React.lazy(() => import('./OrderManageView'))
 const FoodManageView = React.lazy(() => import('./FoodManageView'))
@@ -59,6 +60,9 @@ const router = createBrowserRouter([
     path: '/landing/r/:restaurantId/d/:deskId',
     element: <LandingPage />,
   },
+  {
+    path: '/r/:restaurantId/d/:deskId',
+    element: <OrderFoodPage />,
   }
 ]);
 
