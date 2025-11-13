@@ -27,7 +27,7 @@ export type Food = {
 }
 
 export type DeskInfo = {
-  did: number, // 餐桌id
+  id: number, // 餐桌id
   rid: number, // 餐厅id
   name: string, // 餐桌/包间名称
   capacity: number, // 包间容量

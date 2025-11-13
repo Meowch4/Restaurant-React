@@ -50,6 +50,7 @@ function OrderManageView() {
   useEffect(() => {
     const client = io(`ws://${location.host}`, {
       path: '/restaurant',
+      transports:['websocket', 'polling'],
       query: {
         restaurant: 'restaurant:1'//要监听的餐厅id
       }
