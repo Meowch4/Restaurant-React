@@ -5,23 +5,15 @@ import QRCode from 'qrcode'
 import { makeAutoObservable } from "mobx"
 import { observer } from "mobx-react"
 import { useInput } from "./hooks"
-
-
-
-type Desk = {
-  id: number,
-  rid: number,
-  name: string,
-  capacity: number,
-}
+import type { DeskInfo } from "./types"
 
 
 class DeskManager {
-  desks: Desk[] = []
+  desks: DeskInfo[] = []
   constructor() {
     makeAutoObservable(this)
   }
-  addDesks( ...desks: Desk[]) {
+  addDesks( ...desks: DeskInfo[]) {
     this.desks.push(...desks)
   }
   deleteDesk(idx: number) {
@@ -81,7 +73,7 @@ export default DeskManageViewObserver
 
 type DeskItemProps = {
   manager: DeskManager,
-  desk: Desk,
+  desk: DeskInfo,
   idx: number,
   qrcodes: string[],
 }
@@ -121,7 +113,7 @@ const DeskItem: React.FC<DeskItemProps> = observer(( {manager, desk, idx, qrcode
     )
   }
 
-  function deleteDesk(desk: Desk, idx:number) {
+  function deleteDesk(desk: DeskInfo, idx:number) {
     axios.delete(`/api/restaurant/1/desk/${desk.id}`)
     manager.deleteDesk(idx)
   }
