@@ -4,6 +4,7 @@ import { printOrder } from "./utils"
 import { makeAutoObservable, observable } from "mobx"
 import { observer } from "mobx-react"
 import type { Order } from "./types"
+import { io } from "socket.io-client"
 
 
 class OrderManager {
@@ -28,6 +29,9 @@ function OrderManageView() {
 
   const [manager] = useState(() => observable(new OrderManager()))
 
+  // const music = useRef<HTMLAudioElement | null>(null)
+
+  // 加载订单数据
   useEffect(() => {
     let ignore = false
     axios.get(`/api/restaurant/1/order`)
@@ -40,6 +44,30 @@ function OrderManageView() {
       ignore = true
     }
   }, [manager])
+
+
+  // 利用ws实现实时下单功能
+  useEffect(() => {
+    const client = io(`ws://${location.host}`, {
+      path: '/restaurant',
+      query: {
+        restaurant: 'restaurant:1'//要监听的餐厅id
+      }
+    })
+
+    client.on('new order', (newOrder) => {
+      console.log('有新的订单', newOrder)
+      manager.orders.unshift(newOrder)
+      // // 来新订单播放音乐
+      // music.current?.play()
+    })
+
+    return () => {
+      client.close()
+    }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   async function confirmOrder(idx:number) {
     const order = manager.orders[idx]
@@ -64,6 +92,7 @@ function OrderManageView() {
 
   return (
     <div>
+      {/* <audio src="xxx.mp3" ref={music}></audio> */}
       <span className="font-bold text-2xl">
         订单管理
       </span>

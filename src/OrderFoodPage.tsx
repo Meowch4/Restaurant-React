@@ -1,7 +1,6 @@
 import { useRequest, useToggle } from "ahooks"
 import axios from "axios"
 import { useNavigate, useParams, useSearchParams } from "react-router"
-import { useEffect, useState } from "react"
 import { useImmer } from "use-immer"
 import type { Food } from "./types"
 import { useAtom } from "jotai"
@@ -16,7 +15,7 @@ function getMenu(rId: number | string): Promise<Food[]> {
 
 function OrderFoodPage() {
   const navigate = useNavigate()
-  
+
   const params = useParams()
   const [query] = useSearchParams()
 
@@ -64,7 +63,7 @@ function OrderFoodPage() {
         }
       })
     }
-    await axios.post(`/api/restaurant/${deskInfo!.uid}/desk/${deskInfo!.id}/order`, order)
+    await axios.post(`/api/restaurant/${deskInfo!.rid}/desk/${deskInfo!.did}/order`, order)
     navigate('/order-success')
   }
 

@@ -11,6 +11,10 @@ export default defineConfig({
         changeOrigin: true,
       },
       '/upload': 'http://localhost:5002/',
+      '/restaurant': {
+        target: 'http://localhost:5002/',
+        ws: true,
+      }
     }
   }
 })
