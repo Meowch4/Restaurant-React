@@ -3,34 +3,8 @@ import { useEffect, useState } from "react"
 import { printOrder } from "./utils"
 import { makeAutoObservable, observable } from "mobx"
 import { observer } from "mobx-react"
+import type { Order } from "./types"
 
-export type Order = {
-  id: number,
-  rid: number,
-  did: number,
-  deskName: string,
-  customCount: number,
-  details: Array<
-    {
-      amount: number,
-      food: Food,
-    }
-  >,
-  status: 'pending' | 'confirmed' | 'completed',
-  timestamp: string,
-  totalPrice: number
-}
-
-export type Food = {
-  id: number,
-  rid: number,
-  name: string,
-  desc: string,
-  price: number,
-  img: string,
-  category: string,
-  status: 'on' | 'off',
-}
 
 class OrderManager {
   orders: Order[] = []

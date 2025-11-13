@@ -1,15 +1,19 @@
 import { useRequest, useToggle } from "ahooks"
 import axios from "axios"
 import { useParams } from "react-router"
-import type { Food } from "./OrderManageView"
 import { useEffect, useState } from "react"
 import { useImmer } from "use-immer"
+import type { Food } from "./types"
 
 function getMenu(rId: number | string): Promise<Food[]> {
   return axios.get('/api/menu/restaurant/' + rId)
   .then(res => {
     return res.data
   })
+}
+
+function getDeskInfo(id: string | number): Promise<{name: string, title: string}> {
+
 }
 
 
