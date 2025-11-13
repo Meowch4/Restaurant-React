@@ -16,14 +16,17 @@ function getMenu(rId: number | string): Promise<Food[]> {
 function OrderFoodPage() {
   const params = useParams()
   const [foodCount, updateFoodCount] = useImmer<number[]>([])
+  const [checkedFood, updateCheckedFood] = useImmer<boolean[]>([])
 
   const [expand, {toggle}] = useToggle(true)
+
 
   // data: menu是把data解构后别名menu
   const { data: menu, loading } = useRequest(getMenu, {
     defaultParams: [params.restaurantId!],
     onSuccess: (data) => {
       updateFoodCount(Array(data.length).fill(0))
+      updateCheckedFood(Array(data.length).fill(true))
     }
   })
 
@@ -72,8 +75,15 @@ function OrderFoodPage() {
         idx,
         count,
         food: menu![idx],
+        checked: checkedFood[idx],
       }
     }).filter(it => it.count > 0)
+  }
+
+  function setCheckedFood(idx: number, checked: boolean) {
+    updateCheckedFood(draft => {
+      draft[idx] = checked
+    })
   }
 
   function selectedFoodSum() {
@@ -83,7 +93,7 @@ function OrderFoodPage() {
   return (
     <div>
       <h1>点餐页面</h1>
-      <div className="pb-16">
+      <div className="pb-16 p-2">
         {
           menu!.map((foodItem: Food, idx: number) => (
               <div className="border flex p-2 m-2 rounded" key={idx}>
@@ -95,31 +105,36 @@ function OrderFoodPage() {
                   <div>{ foodItem.desc }</div>
                   <div>￥{ foodItem.price }</div>
                 </div>
-                <Counter min={0} max={5} onChange={c => setFoodCount(idx, c)}/>
+                <Counter value={foodCount[idx]} min={0} max={5} onChange={c => setFoodCount(idx, c)}/>
               </div>
           ))
         }
       </div>
 
-      <div className="fixed bottom-0 bg-slate-700 w-full ">
-        <div data-detail="当前购物车详情" hidden={expand}>
-          <div className="flex">
+      <div className="fixed bottom-0 left-2 right-2 bg-slate-100 w-full p-2">
+        <div data-detail="当前购物车详情" hidden={expand} className="divide-y p-2">
+          {/* <div className="flex ">
             <div className="grow basis-0">菜品</div>
             <div className="grow basis-0">数量</div>
             <div className="grow basis-0">小计</div>
-          </div>
+          </div> */}
+          <div className="divide-y">
           {
             selectedFood()
             .map(entry => {
               return (
-                <div key={entry.idx} className="flex">
+                <div key={entry.idx} className="flex py-2 gap-2">
+                  <div>
+                    <input type="checkbox" checked={entry.checked} onChange={(e) => setCheckedFood(entry.idx, e.target.checked)} />
+                  </div>
                   <div className="grow basis-0">{ entry.food.name }</div>
-                  <div className="grow basis-0">{ entry.count }</div>
-                  <div className="grow basis-0">{ entry.count * entry.food.price }</div>
+                  <div className="grow basis-0 text-right pr-8">{ entry.count * entry.food.price }￥</div>
+                  <Counter value={entry.count} onChange={c => setFoodCount(entry.idx, c)}/>
                 </div>
               )
             })
           }
+          </div>
         </div>
         <div className="flex items-center justify-between">
           <button className="relative" onClick={toggle}>
@@ -131,7 +146,7 @@ function OrderFoodPage() {
             </span>
           </button>
           <span>￥ { totalPrice() }</span>
-          <button onClick={placeOrder}>下单</button>
+          <button onClick={ placeOrder }>下单</button>
         </div>
 
       </div>
@@ -145,45 +160,37 @@ export default OrderFoodPage
 type CounterProps = {
   min?: number,
   max?: number,
-  start?: number,
+  value?: number,
   step?: number,
   onChange?: (current: number) => void
 }
 
-export function Counter({ max = 10, min = 0, start = 0, step = 1, onChange = () => {}}: CounterProps) {
-  const [current, setCurrent] = useState(start)
+// Counter被实现成了受控组件，取value属性的值为多少，里面一定显示为多少
+// 这样一来，把同一个变量传给两个Couter组件，他们就能同步
+export function Counter({ max = 10, min = 0, value = 0, step = 1, onChange = () => {}}: CounterProps) {
 
   function inc() {
-    setCurrent(c => {
-      let t = c + step
+      let t = value + step
       if (t > max) {
         t = max
       }
-      return t
-    })
+      onChange(t)
   }
 
   function dec() {
-    setCurrent(c => {
-      let t = c - step
+      let t = value - step
       if (t < min) {
         t = min
       }
-      return t
-    })
+      onChange(t)
   }
-
-  useEffect(() => {
-    onChange(current)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [current])
 
 
   return (
     <div className="flex gap-1 items-center self-center">
-      <button onClick={dec} className="w-8 h-8 rounded-full flex justify-center items-center">-</button>
-      <span>{ current }</span>
-      <button onClick={inc} className="w-8 h-8 rounded-full flex justify-center items-center">+</button>
+      <button onClick={dec} className="text-xs w-8 h-8 font-bold bg-yellow-400 rounded-full flex justify-center items-center">-</button>
+      <span>{ value }</span>
+      <button onClick={inc} className="text-xs w-8 h-8 font-bold bg-yellow-400 rounded-full flex justify-center items-center">+</button>
     </div>
   )
 }
