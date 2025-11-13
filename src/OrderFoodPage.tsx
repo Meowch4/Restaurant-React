@@ -5,6 +5,8 @@ import { useImmer } from "use-immer"
 import type { Food } from "./types"
 import { useAtom } from "jotai"
 import { deskInfoAtom } from "./store"
+import { useEffect, useRef } from "react"
+import { io, Socket } from "socket.io-client"
 
 function getMenu(rId: number | string): Promise<Food[]> {
   return axios.get('/api/menu/restaurant/' + rId)
@@ -36,9 +38,61 @@ function OrderFoodPage() {
     }
   })
 
+  console.log(deskInfo)
+
+  // 让多个函数都能访问到client
+  const clientRef = useRef<Socket | null>(null)
+  useEffect(() => {
+    // 最开始的menu是undefined 所以把逻辑放在menu非空的if里
+    if (menu) {
+      clientRef.current = io(`ws://${location.host}`, {
+        path: '/desk',
+        transports:['websocket', 'polling'],
+        query: {
+          desk: `desk:${deskInfo!.id}`//要加入的桌号
+        }
+      })
+  
+      // 连接成功后触发，告知此桌已加入购物车的菜品
+      clientRef.current.on('cart food', (foodAry) => {
+  
+      })
+  
+      // 此桌已点的菜更新时
+      clientRef.current.on('new food', (info: {desk: string, food: Food, amount: number}) => {
+        const foodId = info.food.id
+        const idx = menu!.findIndex(it => it.id == foodId)
+        if (idx > 0) {
+          updateFoodCount(foodCount => {
+            foodCount[idx] = info.amount
+          })
+        }
+      })
+  
+      // 此桌已（被其他用户）下单
+      clientRef.current.on('placeorder success', order => {
+  
+      })
+    }
+
+    return () => {
+      clientRef.current?.close()
+      clientRef.current = null
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [menu])
+
   function setFoodCount(idx: number, count: number) {
     updateFoodCount(draft => {
       draft[idx] = count
+    })
+    // 不放到上面函数的内部是因为开发阶段会运行两次
+    // 向服务器发送某个菜品数量变化的事件
+    // 服务器会通知该桌子上所有点菜的人
+    clientRef.current?.emit('new food', {
+      desk: 'desk:' + params.deskId,
+      food: menu![idx],
+      amount: count,
     })
   }
 
@@ -63,7 +117,7 @@ function OrderFoodPage() {
         }
       })
     }
-    await axios.post(`/api/restaurant/${deskInfo!.rid}/desk/${deskInfo!.did}/order`, order)
+    await axios.post(`/api/restaurant/${deskInfo!.rid}/desk/${deskInfo!.id}/order`, order)
     navigate('/order-success')
   }
 

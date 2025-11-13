@@ -14,6 +14,10 @@ export default defineConfig({
       '/restaurant': {
         target: 'http://localhost:5002/',
         ws: true,
+      },
+      '/desk': {
+        target: 'http://localhost:5002/',
+        ws: true,
       }
     }
   }
