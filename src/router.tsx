@@ -15,6 +15,7 @@ const FoodManageView = React.lazy(() => import('./FoodManageView'))
 const DeskManageView = React.lazy(() => import('./DeskManageView'))
 const AddDeskView = React.lazy(() => import('./AddDeskView'))
 const AddFoodView = React.lazy(() => import('./AddFoodView'))
+// const OrderSuccess = React.lazy(() => import('./OrderSuccess'))
 
 const router = createBrowserRouter([
   {
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
   {
     path: '/r/:restaurantId/d/:deskId',
     element: <OrderFoodPage />,
+  },
+  {
+    path: '/order-success',
+    element: <div>下单成功</div>,
   }
 ]);
 

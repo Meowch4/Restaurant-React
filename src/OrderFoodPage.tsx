@@ -1,9 +1,11 @@
 import { useRequest, useToggle } from "ahooks"
 import axios from "axios"
-import { useParams } from "react-router"
+import { useNavigate, useParams, useSearchParams } from "react-router"
 import { useEffect, useState } from "react"
 import { useImmer } from "use-immer"
 import type { Food } from "./types"
+import { useAtom } from "jotai"
+import { deskInfoAtom } from "./store"
 
 function getMenu(rId: number | string): Promise<Food[]> {
   return axios.get('/api/menu/restaurant/' + rId)
@@ -12,19 +14,20 @@ function getMenu(rId: number | string): Promise<Food[]> {
   })
 }
 
-function getDeskInfo(id: string | number): Promise<{name: string, title: string}> {
-
-}
-
-
 function OrderFoodPage() {
+  const navigate = useNavigate()
+  
   const params = useParams()
+  const [query] = useSearchParams()
+
   const [foodCount, updateFoodCount] = useImmer<number[]>([])
   const [checkedFood, updateCheckedFood] = useImmer<boolean[]>([])
 
   const [expand, {toggle}] = useToggle(true)
 
+  const [deskInfo] = useAtom(deskInfoAtom)
 
+  // 请求餐厅的菜单信息
   // data: menu是把data解构后别名menu
   const { data: menu, loading } = useRequest(getMenu, {
     defaultParams: [params.restaurantId!],
@@ -40,6 +43,7 @@ function OrderFoodPage() {
     })
   }
 
+  // 计算总价
   function totalPrice() {
     return menu!.map(it => it.price)
       .map((price: number, idx: number) => {
@@ -47,32 +51,28 @@ function OrderFoodPage() {
       }).reduce((a, b) => a + b, 0)
   }
 
-
-//   ### POST /restaurant/:rid/desk/:did/order
-
-// ```json
-// {
-//   deskName:
-//   customCount:
-//   totalPrice:
-//   foods: [{id, amount}, {}, {}]
-// }
-// ```
-  function placeOrder() {
-    axios.post(`/api/restaurant/1/desk/2/order`, {
-      // deskName: params.deskId,
-      // customCount: ,
-      // totalPrice: ,
-      // foods: [
-
-      // ],
-    })
+  // 下单按钮函数
+  async function placeOrder() {
+    const order = {
+      deskName: deskInfo?.name,
+      customCount: query.get('c'),
+      totalPrice: totalPrice(),
+      foods: selectedFood().filter(it => it.checked).map(it => {
+        return {
+          amount: it.count,
+          food: it.food,
+        }
+      })
+    }
+    await axios.post(`/api/restaurant/${deskInfo!.uid}/desk/${deskInfo!.id}/order`, order)
+    navigate('/order-success')
   }
 
   if (loading) {
     return 'Loading...'
   }
 
+  // 这是返回选择数量大于0的菜，不管有没有check
   function selectedFood() {
     return foodCount.map((count, idx) => {
       return {
@@ -84,12 +84,14 @@ function OrderFoodPage() {
     }).filter(it => it.count > 0)
   }
 
+  // 配合checkbox的onchange修改菜品check状态的函数
   function setCheckedFood(idx: number, checked: boolean) {
     updateCheckedFood(draft => {
       draft[idx] = checked
     })
   }
 
+  // 一共选了多少个菜品（不去重），放在菜品数量小红点里的
   function selectedFoodSum() {
     return selectedFood().map(it => it.count).reduce((a, b) => a + b, 0)
   }
