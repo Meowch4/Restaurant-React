@@ -6,6 +6,11 @@ import {
 } from "react-router";
 import router from './router.tsx'
 
+import { configure } from 'mobx'
+configure({
+  enforceActions: 'never',
+})
+
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
