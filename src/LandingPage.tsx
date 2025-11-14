@@ -29,7 +29,7 @@ function LandingPage() {
   })
 
   function startOrdering() {
-    navigate('/r/1/d/1/?c=' + customCount)
+    navigate(`/r/1/d/${params.deskId}/?c=` + customCount)
   }
 
   return (

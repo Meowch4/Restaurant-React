@@ -15,6 +15,13 @@ function getMenu(rId: number | string): Promise<Food[]> {
   })
 }
 
+function getDeskInfo(deskId: number | string) {
+  return axios.get('/api/deskinfo?did=' + deskId)
+  .then (res => {
+    return res.data
+  })
+}
+
 function OrderFoodPage() {
   const navigate = useNavigate()
 
@@ -26,11 +33,13 @@ function OrderFoodPage() {
 
   const [expand, {toggle}] = useToggle(true)
 
-  const [deskInfo] = useAtom(deskInfoAtom)
+  const { data: deskInfo, loading: deskLoading } = useRequest(getDeskInfo, {
+    defaultParams: [params.deskId!],
+  })
 
   // 请求餐厅的菜单信息
   // data: menu是把data解构后别名menu
-  const { data: menu, loading } = useRequest(getMenu, {
+  const { data: menu, loading: menuLoading } = useRequest(getMenu, {
     defaultParams: [params.restaurantId!],
     onSuccess: (data) => {
       updateFoodCount(Array(data.length).fill(0))
@@ -121,7 +130,7 @@ function OrderFoodPage() {
     navigate('/order-success')
   }
 
-  if (loading) {
+  if (deskLoading || menuLoading) {
     return 'Loading...'
   }
 
@@ -151,7 +160,7 @@ function OrderFoodPage() {
 
   return (
     <div>
-      <h1>点餐页面</h1>
+      <h1>{ deskInfo.title } - { deskInfo.name }</h1>
       <div className="pb-16 p-2">
         {
           menu!.map((foodItem: Food, idx: number) => (
