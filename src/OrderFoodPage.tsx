@@ -3,8 +3,6 @@ import axios from "axios"
 import { useNavigate, useParams, useSearchParams } from "react-router"
 import { useImmer } from "use-immer"
 import type { Food } from "./types"
-import { useAtom } from "jotai"
-import { deskInfoAtom } from "./store"
 import { useEffect, useRef } from "react"
 import { io, Socket } from "socket.io-client"
 
@@ -63,8 +61,13 @@ function OrderFoodPage() {
       })
   
       // 连接成功后触发，告知此桌已加入购物车的菜品
-      clientRef.current.on('cart food', (foodAry) => {
-  
+      clientRef.current.on('cart food', (foodAry: {desk: string, food: Food, amount: number}[]) => {
+        for (const info of foodAry) {
+          const idx = menu.findIndex(it => it.id == info.food.id)
+          updateFoodCount(foodCount => {
+            foodCount[idx] = info.amount
+          })
+        }
       })
   
       // 此桌已点的菜更新时
@@ -80,7 +83,7 @@ function OrderFoodPage() {
   
       // 此桌已（被其他用户）下单
       clientRef.current.on('placeorder success', order => {
-  
+        navigate('/order-success')
       })
     }
 
@@ -99,7 +102,7 @@ function OrderFoodPage() {
     // 向服务器发送某个菜品数量变化的事件
     // 服务器会通知该桌子上所有点菜的人
     clientRef.current?.emit('new food', {
-      desk: 'desk:' + params.deskId,
+      desk: `desk:${params.deskId}`,
       food: menu![idx],
       amount: count,
     })
