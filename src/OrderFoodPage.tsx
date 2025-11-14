@@ -1,10 +1,12 @@
-import { useRequest, useToggle } from "ahooks"
+import { useRequest, useThrottleFn, useToggle } from "ahooks"
 import axios from "axios"
 import { useNavigate, useParams, useSearchParams } from "react-router"
 import { useImmer } from "use-immer"
 import type { Food } from "./types"
-import { useEffect, useRef } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { io, Socket } from "socket.io-client"
+import { SideBar } from "antd-mobile"
+import _ from 'lodash'
 
 function getMenu(rId: number | string): Promise<Food[]> {
   return axios.get('/api/menu/restaurant/' + rId)
@@ -82,7 +84,7 @@ function OrderFoodPage() {
       })
   
       // 此桌已（被其他用户）下单
-      clientRef.current.on('placeorder success', order => {
+      clientRef.current.on('placeorder success', () => {
         navigate('/order-success')
       })
     }
@@ -132,10 +134,15 @@ function OrderFoodPage() {
     await axios.post(`/api/restaurant/${deskInfo!.rid}/desk/${deskInfo!.id}/order`, order)
     navigate('/order-success')
   }
+  const groupedMenu = useMemo(() => {
+    if (!menu) {
+      return []
+    } else {
+      return _.groupBy(menu, 'category')
+    }
+  }, [menu])
 
-  if (deskLoading || menuLoading) {
-    return 'Loading...'
-  }
+  console.log(groupedMenu)
 
   // 这是返回选择数量大于0的菜，不管有没有check
   function selectedFood() {
@@ -160,41 +167,147 @@ function OrderFoodPage() {
   function selectedFoodSum() {
     return selectedFood().map(it => it.count).reduce((a, b) => a + b, 0)
   }
+  
+  // 侧边栏当前激活项目的key
+  const [activeKey, setActiveKey] = useState(Object.keys(groupedMenu)[0])
+
+  const { run: handleScroll } = useThrottleFn(
+    () => {
+      // groupedMenu是一个形如{'肉类': '鱼香肉丝','糖醋排骨'}的对象
+      // 默认选第一个
+      let currentKey = Object.keys(groupedMenu)[0]
+
+      for (const key of Object.keys(groupedMenu)) {
+        const element = document.getElementById(`anchor-${key}`)
+        if (!element) continue
+        const rect = element.getBoundingClientRect()
+
+        // 如果元素的最上端在窗口的上方(<= 0)
+        // 这个页面的h1高度为60 所以把界限设置为62
+        if (rect.top <= 62) {
+          currentKey = key
+        } else {
+          break
+        }
+      }
+
+      setActiveKey(currentKey)
+    },
+    {
+      leading: true,
+      trailing: true,
+      wait: 100,
+    }
+  )
+
+  const mainElementRef = useRef<HTMLDivElement>(null)
+
+  // useEffect(() => {
+  //   const mainElement = mainElementRef.current
+  //   if (!mainElement) return
+  //   mainElement.addEventListener('scroll', handleScroll)
+  //   return () => {
+  //     mainElement.removeEventListener('scroll', handleScroll)
+  //   }
+  // },[])
+
+   // 这里有个if，记得把所有useMemo/useEffect放到它前面
+  if (deskLoading || menuLoading) {
+    return 'Loading...'
+  }
 
   return (
-    <div>
-      <h1>{ deskInfo.title } - { deskInfo.name }</h1>
-      <div className="pb-16 p-2">
-        {
-          menu!.map((foodItem: Food, idx: number) => (
-              <div className="border flex p-2 m-2 rounded" key={idx}>
-                <img 
-                className="w-24 h-24"
-                src={`/upload/${foodItem.img}`} alt="" />
-                <div className="grow">
-                  <div>{ foodItem.name }</div>
-                  <div>{ foodItem.desc }</div>
-                  <div>￥{ foodItem.price }</div>
+    <div className="h-full flex flex-col">
+      <h1 className="text-xl font-bold p-4 border-b">{ deskInfo.title } - { deskInfo.name }</h1>
+      <div className="flex grow overflow-auto">
+        <div>
+          <SideBar
+          activeKey={activeKey}
+          onChange={key => {
+            document.getElementById(`anchor-${key}`)?.scrollIntoView({
+              behavior: 'smooth',
+            })
+          }}
+          >
+            {
+              Object.keys(groupedMenu).map(it => {
+                return <SideBar.Item title={it} key={it}></SideBar.Item>
+              })
+            }
+          </SideBar>
+        </div>
+        <div 
+        className="overflow-auto grow p-2"
+        ref={mainElementRef}
+        onScroll={handleScroll}>
+          {
+            Object.entries(groupedMenu).map((entry) => {
+              const [key, foodItems] = entry 
+              return (
+                <div 
+                key={key} 
+                >
+                  <h2 id={`anchor-${key}`} className="pt-2 m-2 text-lg font-bold">{ key }</h2>
+                  <div className="space-y-4">
+                    {
+                      foodItems.map((foodItem: Food, idx: number) => {
+                        return (
+                            <div className="border flex p-2 m-2 rounded" key={idx}>
+                              <img 
+                              className="w-24 h-24 rounded shrink-0"
+                              src={`/upload/${foodItem.img}`} alt="" />
+                              <div className="grow p-2 text-base">
+                                <div className="font-bold ">{ foodItem.name }</div>
+                                <div>{ foodItem.desc }</div>
+                                <div>￥{ foodItem.price }</div>
+                              </div>
+                              <Counter value={foodCount[idx]} min={0} max={5} onChange={c => setFoodCount(idx, c)}/>
+                            </div>
+                        )
+                      })
+                    }
+                  </div>
                 </div>
-                <Counter value={foodCount[idx]} min={0} max={5} onChange={c => setFoodCount(idx, c)}/>
-              </div>
-          ))
-        }
-      </div>
+              )
+            })
+          }
+          <div className="h-[calc(100%-125px)]">
+            安全区
+          </div>
+        </div>
 
-      <div className="fixed bottom-0 left-2 right-2 bg-slate-100 w-full p-2">
-        <div data-detail="当前购物车详情" hidden={expand} className="divide-y p-2">
-          {/* <div className="flex ">
-            <div className="grow basis-0">菜品</div>
-            <div className="grow basis-0">数量</div>
-            <div className="grow basis-0">小计</div>
-          </div> */}
-          <div className="divide-y">
+      </div>
+      
+        <div className="h-20 shrink-0">
+          {/* 挡住缝 */}
+        </div>
+
+        <div className="hidden pb-16 p-2 grow overflow-auto">
+          {
+            menu!.map((foodItem: Food, idx: number) => (
+                <div className="border flex p-2 m-2 rounded" key={idx}>
+                  <img 
+                  className="w-24 h-24"
+                  src={`/upload/${foodItem.img}`} alt="" />
+                  <div className="grow">
+                    <div>{ foodItem.name }</div>
+                    <div>{ foodItem.desc }</div>
+                    <div>￥{ foodItem.price }</div>
+                  </div>
+                  <Counter value={foodCount[idx]} min={0} max={5} onChange={c => setFoodCount(idx, c)}/>
+                </div>
+            ))
+          }
+        </div>
+
+      <div className="fixed bottom-0 w-full p-2">
+        <div data-detail="当前购物车详情" hidden={expand} className="divide-y ">
+          <div className="divide-y bg-slate-100 rounded">
           {
             selectedFood()
             .map(entry => {
               return (
-                <div key={entry.idx} className="flex py-2 gap-2">
+                <div key={entry.idx} className="flex items-center p-2 gap-2">
                   <div>
                     <input type="checkbox" checked={entry.checked} onChange={(e) => setCheckedFood(entry.idx, e.target.checked)} />
                   </div>
@@ -207,20 +320,21 @@ function OrderFoodPage() {
           }
           </div>
         </div>
-        <div className="flex items-center justify-between">
-          <button className="relative" onClick={toggle}>
+        <div className="bg-slate-100 h-16 rounded-full border-t flex items-center justify-between">
+          <button className="rounded-l-full h-16 w-20 text-base bg-yellow-400  relative" onClick={toggle}>
             展开
             <span 
             hidden={selectedFoodSum() == 0} 
-            className="absolute -right-1 -top-1 bg-red-500 text-white rounded-full text-sm w-6 h-6 flex items-center justify-center">
+            className=" absolute -right-1 -top-1 bg-red-500 text-white rounded-full text-sm w-6 h-6 flex items-center justify-center">
               { selectedFoodSum() }
             </span>
           </button>
-          <span>￥ { totalPrice() }</span>
-          <button onClick={ placeOrder }>下单</button>
+          <span className="text-lg font-bold">￥ <span className="text-3xl">{ totalPrice() }</span></span>
+          <button className="rounded-r-full h-16 w-20 text-base bg-yellow-400" onClick={ placeOrder }>下单</button>
         </div>
 
       </div>
+
     </div>
   )
 }
