@@ -1,5 +1,5 @@
 import { makeAutoObservable, observable } from "mobx"
-import { type Food } from "./OrderManageView"
+import { type Food } from "./types"
 import { useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react"
 import axios from "axios"
@@ -16,6 +16,9 @@ class FoodManager {
   }
   setFoodStatus(idx:number, status: Food['status']) {
     this.foods[idx].status = status
+  }
+  deleteFood(idx: number) {
+    this.foods.splice(idx, 1)
   }
 }
 function FoodManageView() {
@@ -76,6 +79,11 @@ const FoodItem: React.FC<FoodItemProp> = observer(({ manager, foodItem, idx }) =
     await axios.put(`/api/restaurant/1/food/${food.id}`,
       {status: 'on'})
     manager.setFoodStatus(idx, 'on')
+  }
+  async function deleteFood(idx: number) {
+    const food = manager.foods[idx]
+    await axios.delete(`/api/restaurant/1/food/${food.id}`)
+    manager.deleteFood(idx)
   }
 
   const name = useInput(foodItem.name)
@@ -139,7 +147,7 @@ const FoodItem: React.FC<FoodItemProp> = observer(({ manager, foodItem, idx }) =
           {foodItem.status == 'on' && <button onClick={() => offShelf(idx)}>下架</button>}
           {foodItem.status == 'off' && <button onClick={() => onShelf(idx)}>上架</button>}
           <button onClick={() => setEditing(true)}>编辑</button>
-          <button>删除</button>
+          <button onClick={() => deleteFood(idx)}>删除</button>
         </div>
       </div>
     </div>
