@@ -216,7 +216,7 @@ function OrderFoodPage() {
 
    // 这里有个if，记得把所有useMemo/useEffect放到它前面
   if (deskLoading || menuLoading) {
-    return <div>
+    return <div className="p-4">
       <Skeleton.Title animated/>
       <Skeleton.Paragraph animated lineCount={12}/>
       <Skeleton.Title animated/>
@@ -245,7 +245,7 @@ function OrderFoodPage() {
           </SideBar>
         </div>
         <div 
-        className="overflow-auto grow p-2"
+        className="overflow-auto grow space-y-4"
         ref={mainElementRef}
         onScroll={handleScroll}>
           { // 菜品界面
@@ -254,8 +254,12 @@ function OrderFoodPage() {
               return (
                 <div 
                 key={key} 
+                className=""
                 >
-                  <h2 id={`anchor-${key}`} className="pt-2 m-2 text-lg font-bold">{ key }</h2>
+                  <h2 id={`anchor-${key}`} 
+                  className="z-50 sticky top-0 bg-slate-100 text-yellow-400 pt-2 text-xl font-bold">
+                    { key }
+                  </h2>
                   <div className="space-y-4">
                     {
                       foodItems.map((foodItem) => {
@@ -298,7 +302,7 @@ function OrderFoodPage() {
               )
             })
           }
-          <div className="h-[calc(100%-115px)] ">
+          <div className="h-[calc(100%-187px)] ">
             <Footer label="没有更多了" className="bg-transparent"></Footer>
           </div>
         </div>
