@@ -96,16 +96,19 @@ function OrderFoodPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [menu])
 
-  function setFoodCount(idx: number, count: number) {
-    updateFoodCount(draft => {
-      draft[idx] = count
+  function setFoodCount(foodId: number, count: number) {
+    const idx = menu?.findIndex(it => it.id == foodId)
+    updateFoodCount(foodCount => {
+      foodCount[idx!] = count
     })
+
+
     // 不放到上面函数的内部是因为开发阶段会运行两次
     // 向服务器发送某个菜品数量变化的事件
     // 服务器会通知该桌子上所有点菜的人
     clientRef.current?.emit('new food', {
       desk: `desk:${params.deskId}`,
-      food: menu![idx],
+      food: menu![idx!],
       amount: count,
     })
   }
@@ -250,7 +253,9 @@ function OrderFoodPage() {
                   <h2 id={`anchor-${key}`} className="pt-2 m-2 text-lg font-bold">{ key }</h2>
                   <div className="space-y-4">
                     {
-                      foodItems.map((foodItem: Food, idx: number) => {
+                      foodItems.map((foodItem: Food) => {
+                        // 找到当前菜品在总菜单而不是分组后的菜单中的下标
+                        const idx = menu?.findIndex(it => it.id == foodItem.id)
                         return (
                             <div className="border flex p-2 m-2 rounded" key={idx}>
                               <img 
@@ -261,7 +266,7 @@ function OrderFoodPage() {
                                 <div>{ foodItem.desc }</div>
                                 <div>￥{ foodItem.price }</div>
                               </div>
-                              <Counter value={foodCount[idx]} min={0} max={5} onChange={c => setFoodCount(idx, c)}/>
+                              <Counter value={foodCount[idx!]} min={0} max={5} onChange={c => setFoodCount(foodItem.id, c)}/>
                             </div>
                         )
                       })
@@ -294,7 +299,7 @@ function OrderFoodPage() {
                     <div>{ foodItem.desc }</div>
                     <div>￥{ foodItem.price }</div>
                   </div>
-                  <Counter value={foodCount[idx]} min={0} max={5} onChange={c => setFoodCount(idx, c)}/>
+                  <Counter value={foodCount[idx]} min={0} max={5} onChange={c => setFoodCount(foodItem.id, c)}/>
                 </div>
             ))
           }
@@ -313,7 +318,7 @@ function OrderFoodPage() {
                   </div>
                   <div className="grow basis-0">{ entry.food.name }</div>
                   <div className="grow basis-0 text-right pr-8">{ entry.count * entry.food.price }￥</div>
-                  <Counter value={entry.count} onChange={c => setFoodCount(entry.idx, c)}/>
+                  <Counter value={entry.count} onChange={c => setFoodCount(entry.food.id, c)}/>
                 </div>
               )
             })
