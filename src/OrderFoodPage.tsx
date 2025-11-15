@@ -253,7 +253,7 @@ function OrderFoodPage() {
                   <h2 id={`anchor-${key}`} className="pt-2 m-2 text-lg font-bold">{ key }</h2>
                   <div className="space-y-4">
                     {
-                      foodItems.map((foodItem: Food) => {
+                      foodItems.map((foodItem) => {
                         // 找到当前菜品在总菜单而不是分组后的菜单中的下标
                         const idx = menu?.findIndex(it => it.id == foodItem.id)
                         return (
@@ -276,15 +276,15 @@ function OrderFoodPage() {
               )
             })
           }
-          <div className="h-[calc(100%-125px)]">
+          <div className="h-[calc(100%-115px)] opacity-0">
             安全区
           </div>
         </div>
 
       </div>
       
-        <div className="h-20 shrink-0">
-          {/* 挡住缝 */}
+        <div className="h-20 shrink-0 opacity-0">
+          底部安全区
         </div>
 
         <div className="hidden pb-16 p-2 grow overflow-auto">
@@ -307,7 +307,7 @@ function OrderFoodPage() {
 
       <div className="fixed bottom-0 w-full p-2">
         <div data-detail="当前购物车详情" hidden={expand} className="divide-y ">
-          <div className="divide-y bg-slate-100 rounded">
+          <div className="p-2 divide-y bg-slate-100 rounded-xl">
           {
             selectedFood()
             .map(entry => {
