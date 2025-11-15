@@ -21,7 +21,6 @@
     "lodash": "^4.17.21",
     "mobx": "^6.15.0",
     "mobx-react": "^9.2.1",
-    "qrcode": "^1.5.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router": "^7.9.5",

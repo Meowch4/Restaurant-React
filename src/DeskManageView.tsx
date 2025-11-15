@@ -1,11 +1,12 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { Link } from "react-router"
-import QRCode from 'qrcode'
+// import QRCode from 'qrcode'
 import { makeAutoObservable } from "mobx"
 import { observer } from "mobx-react"
 import { useInput } from "./hooks"
 import type { DeskInfo } from "./types"
+import { QRCode } from 'antd'
 
 
 class DeskManager {
@@ -24,21 +25,6 @@ class DeskManager {
 
 function DeskManageView() {
   const [manager] = useState(new DeskManager())
-  const [qrcodes, setQrcodes] = useState<string[]>([])
-
-  // 处理二维码url
-  useEffect(() => {
-    Promise.all(
-      // 把每张桌子都映射为对应的地址创建的url
-      manager.desks.map(desk => {
-        return QRCode.toDataURL(`localhost://5002/restuarant/1/desk/${desk.id}`)
-      })
-      // 拿到urls数组
-    ).then(urls => {
-      setQrcodes(urls)
-    })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [manager.desks.length])
 
   useEffect(() => {
     let ignore = false
@@ -61,7 +47,7 @@ function DeskManageView() {
       <Link to={'/home/add-desk'} className="mx-4">添加餐桌</Link>
       {
         manager.desks.map((desk, idx) => {
-          return <DeskItem key={desk.id} manager={manager} desk={desk} idx={idx} qrcodes={qrcodes}/>
+          return <DeskItem key={desk.id} manager={manager} desk={desk} idx={idx} />
         })
       }
     </div>
@@ -75,10 +61,9 @@ type DeskItemProps = {
   manager: DeskManager,
   desk: DeskInfo,
   idx: number,
-  qrcodes: string[],
 }
 
-const DeskItem: React.FC<DeskItemProps> = observer(( {manager, desk, idx, qrcodes} ) => {
+const DeskItem: React.FC<DeskItemProps> = observer(( {manager, desk, idx} ) => {
   const [editing, setEditing] = useState(false)
 
   const name = useInput(desk.name)
@@ -130,7 +115,8 @@ const DeskItem: React.FC<DeskItemProps> = observer(( {manager, desk, idx, qrcode
         </div>
       </div>
       <div className="p-2">
-        <img data-url={`https://10.3.3.3:5173/r/1/d/${desk.id}`} src={qrcodes[idx]} alt="" className="w-24 h-24" />
+        <QRCode bgColor="white" size={100} value={`https://10.3.3.3:5173/r/1/d/${desk.id}`}></QRCode>
+        {/* <img data-url={`https://10.3.3.3:5173/r/1/d/${desk.id}`} src={qrcodes[idx]} alt="" className="w-24 h-24" /> */}
       </div>
     </div>
   )
