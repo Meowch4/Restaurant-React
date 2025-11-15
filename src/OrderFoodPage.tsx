@@ -5,7 +5,7 @@ import { useImmer } from "use-immer"
 import type { Food } from "./types"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { io, Socket } from "socket.io-client"
-import { SideBar } from "antd-mobile"
+import { SideBar, Checkbox, Stepper, Footer, Skeleton } from "antd-mobile"
 import _ from 'lodash'
 
 function getMenu(rId: number | string): Promise<Food[]> {
@@ -216,7 +216,12 @@ function OrderFoodPage() {
 
    // 这里有个if，记得把所有useMemo/useEffect放到它前面
   if (deskLoading || menuLoading) {
-    return 'Loading...'
+    return <div>
+      <Skeleton.Title animated/>
+      <Skeleton.Paragraph animated lineCount={12}/>
+      <Skeleton.Title animated/>
+      <Skeleton.Paragraph animated lineCount={12}/>
+    </div>
   }
 
   return (
@@ -243,7 +248,7 @@ function OrderFoodPage() {
         className="overflow-auto grow p-2"
         ref={mainElementRef}
         onScroll={handleScroll}>
-          {
+          { // 菜品界面
             Object.entries(groupedMenu).map((entry) => {
               const [key, foodItems] = entry 
               return (
@@ -259,14 +264,16 @@ function OrderFoodPage() {
                         return (
                             <div className="border flex p-2 m-2 rounded" key={idx}>
                               <img 
-                              className="w-24 h-24 rounded shrink-0"
+                              className="w-20 h-20 rounded shrink-0"
                               src={`/upload/${foodItem.img}`} alt="" />
                               <div className="grow p-2 text-base">
                                 <div className="font-bold ">{ foodItem.name }</div>
                                 <div>{ foodItem.desc }</div>
                                 <div>￥{ foodItem.price }</div>
+                                <div className="flex justify-end">
+                                  <Stepper value={foodCount[idx!]} min={0} max={5} onChange={c => setFoodCount(foodItem.id, c)}/>
+                                </div>
                               </div>
-                              <Counter value={foodCount[idx!]} min={0} max={5} onChange={c => setFoodCount(foodItem.id, c)}/>
                             </div>
                         )
                       })
@@ -276,8 +283,8 @@ function OrderFoodPage() {
               )
             })
           }
-          <div className="h-[calc(100%-115px)] opacity-0">
-            安全区
+          <div className="h-[calc(100%-115px)] ">
+            <Footer label="没有更多了" className="bg-transparent"></Footer>
           </div>
         </div>
 
@@ -308,17 +315,17 @@ function OrderFoodPage() {
       <div className="fixed bottom-0 w-full p-2">
         <div data-detail="当前购物车详情" hidden={expand} className="divide-y ">
           <div className="p-2 divide-y bg-slate-100 rounded-xl">
-          {
+          { // 购物车条目
             selectedFood()
             .map(entry => {
               return (
-                <div key={entry.idx} className="flex items-center p-2 gap-2">
+                <div key={entry.idx} className="flex items-center p-2 gap-4">
                   <div>
-                    <input type="checkbox" checked={entry.checked} onChange={(e) => setCheckedFood(entry.idx, e.target.checked)} />
+                    <Checkbox checked={entry.checked} onChange={checked => setCheckedFood(entry.idx, checked)}></Checkbox>
                   </div>
                   <div className="grow basis-0">{ entry.food.name }</div>
                   <div className="grow basis-0 text-right pr-8">{ entry.count * entry.food.price }￥</div>
-                  <Counter value={entry.count} onChange={c => setFoodCount(entry.food.id, c)}/>
+                  <Stepper value={entry.count} onChange={c => setFoodCount(entry.food.id, c)}/>
                 </div>
               )
             })
