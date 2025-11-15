@@ -33,14 +33,14 @@ export default function HomeView() {
   return (
     <div className="h-full flex flex-col">
       <h1 className="border-b flex justify-between items-center p-2">
-        <span className="font-bold text-lg">{ userInfo?.title }</span>
+        <span className="font-bold text-xl px-4">{ userInfo?.title }</span>
         <button>退出</button>
       </h1>
       <div className="flex grow overflow-hidden">
         <div className="w-48 p-4 border-r flex flex-col gap-2 items-center shrink-0">
-          <Link className="[&.active]:bg-slate-700 block p-2" to={'/home/orders'}>订单管理</Link>
-          <Link className="[&.active]:bg-slate-700 block p-2" to={'/home/foods'}>菜品管理</Link>
-          <Link className="[&.active]:bg-slate-700 block p-2" to={'/home/desks'}>餐桌管理</Link>
+          <Link className="[&.active]:bg-slate-700 text-base block p-2" to={'/home/orders'}>订单管理</Link>
+          <Link className="[&.active]:bg-slate-700 text-base block p-2" to={'/home/foods'}>菜品管理</Link>
+          <Link className="[&.active]:bg-slate-700 text-base block p-2" to={'/home/desks'}>餐桌管理</Link>
         </div>
         
         <div className="grow p-4 overflow-auto">

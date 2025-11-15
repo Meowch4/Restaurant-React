@@ -138,7 +138,7 @@ const FoodItem: React.FC<FoodItemProp> = observer(({ manager, foodItem, idx }) =
     <div className="border m-2 p-1 flex gap-2 rounded">
       <img className="w-24 h-24 m-2" src={'/upload/' + foodItem.img} alt="" />
       <div>
-        <div className="font-bold p-1">{ foodItem.name }</div>
+        <div className="font-bold text-base p-1">{ foodItem.name }</div>
         <div className="p-1">价格：{ foodItem.price }</div>
         <div className="p-1">描述：{ foodItem.desc }</div>
         <div className="p-1">分类：{ foodItem.category }</div>
