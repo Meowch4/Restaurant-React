@@ -7,11 +7,11 @@ input {
 }
 /* id选择器 */
 #root {
-  height: 100%;
-  min-height: 100vh;
+  height: 100dvh;
 }
 /* 伪类  选中了html元素*/
 :root {
+  height: 100dvh;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -40,7 +40,7 @@ a:hover {
 
 body {
   margin: 0;
-  height: 100%;
+  height: 100dvh;
   /* display: flex; */
   /* place-items: center; */
   min-width: 320px;
