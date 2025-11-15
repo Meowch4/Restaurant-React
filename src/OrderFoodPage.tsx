@@ -5,7 +5,7 @@ import { useImmer } from "use-immer"
 import type { Food } from "./types"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { io, Socket } from "socket.io-client"
-import { SideBar, Checkbox, Stepper, Footer, Skeleton } from "antd-mobile"
+import { SideBar, Checkbox, Stepper, Footer, Skeleton, Modal } from "antd-mobile"
 import _ from 'lodash'
 
 function getMenu(rId: number | string): Promise<Food[]> {
@@ -264,8 +264,23 @@ function OrderFoodPage() {
                         return (
                             <div className="border flex p-2 m-2 rounded" key={idx}>
                               <img 
-                              className="w-20 h-20 rounded shrink-0"
-                              src={`/upload/${foodItem.img}`} alt="" />
+                              className="w-24 h-24 rounded shrink-0 cursor-pointer"
+                              src={`/upload/${foodItem.img}`} alt=""
+                              onClick={() => {
+                                Modal.show({
+                                  showCloseButton: true,
+                                  closeOnAction: true,
+                                  content: (
+                                    <div className="w-[70vw] h-[60vh]">
+                                      <div className="mx-8 h-full">
+                                        <img className="w-full h-4/5 object-contain rounded shrink-0" src={`/upload/${foodItem.img}`} alt="" />
+                                        <h2>{foodItem.name}</h2>
+                                        <p>{foodItem.desc}</p>
+                                      </div>
+                                    </div>
+                                  )
+                                })
+                              }}/>
                               <div className="grow p-2 text-base">
                                 <div className="font-bold ">{ foodItem.name }</div>
                                 <div>{ foodItem.desc }</div>
