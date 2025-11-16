@@ -1,7 +1,7 @@
 import axios from "axios"
-import { useInput } from "./hooks"
+import { useInput } from "../hooks"
 import { useAtom } from "jotai"
-import { isLoginAtom } from "./store"
+import { isLoginAtom } from "../store"
 import { Link, useNavigate } from "react-router"
 
 export default function Login() {

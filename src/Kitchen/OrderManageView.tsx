@@ -1,9 +1,9 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { printOrder } from "./utils"
+import { printOrder } from "../utils"
 import { makeAutoObservable, observable } from "mobx"
 import { observer } from "mobx-react"
-import type { Order } from "./types"
+import type { Order } from "../types"
 import { io } from "socket.io-client"
 import { notification } from 'antd';
 

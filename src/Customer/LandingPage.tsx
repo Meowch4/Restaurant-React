@@ -3,10 +3,10 @@ import axios from "axios"
 import clsx from "clsx"
 import { useState } from "react"
 import { useNavigate, useParams } from "react-router"
-import { deskInfoAtom } from "./store"
+import { deskInfoAtom } from "../store"
 import { useAtom } from "jotai"
 import { Checkbox } from "antd-mobile"
-import { useDarkMode } from "./hooks"
+import { useDarkMode } from "../hooks"
 
 function getDeskInfo(deskId: number | string) {
   return axios.get('/api/deskinfo?did=' + deskId)

@@ -2,12 +2,12 @@ import { useRequest, useThrottleFn, useToggle } from "ahooks"
 import axios from "axios"
 import { useNavigate, useParams, useSearchParams } from "react-router"
 import { useImmer } from "use-immer"
-import type { Food } from "./types"
+import type { Food } from "../types"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { io, Socket } from "socket.io-client"
 import { SideBar, Checkbox, Stepper, Footer, Skeleton, Modal } from "antd-mobile"
 import _ from 'lodash'
-import { useDarkMode } from "./hooks"
+import { useDarkMode } from "../hooks"
 
 function getMenu(rId: number | string): Promise<Food[]> {
   return axios.get('/api/menu/restaurant/' + rId)

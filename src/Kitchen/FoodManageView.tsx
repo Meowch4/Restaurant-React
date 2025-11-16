@@ -1,10 +1,10 @@
 import { makeAutoObservable, observable } from "mobx"
-import { type Food } from "./types"
+import { type Food } from "../types"
 import { useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react"
 import axios from "axios"
 import { Link } from "react-router"
-import { useInput } from "./hooks"
+import { useInput } from "../hooks"
 import _ from "lodash"
 import { Tabs, type TabsProps } from "antd"
 

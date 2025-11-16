@@ -4,8 +4,8 @@ import { Link } from "react-router"
 // import QRCode from 'qrcode'
 import { makeAutoObservable } from "mobx"
 import { observer } from "mobx-react"
-import { useInput } from "./hooks"
-import type { DeskInfo } from "./types"
+import { useInput } from "../hooks"
+import type { DeskInfo } from "../types"
 import { QRCode } from 'antd'
 
 

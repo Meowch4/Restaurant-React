@@ -1,9 +1,9 @@
 import { useAtom } from "jotai";
 import { Suspense, useEffect, useState } from "react";
 import { NavLink as Link, Outlet, useNavigate } from "react-router";
-import { isLoginAtom } from "./store";
+import { isLoginAtom } from "../store";
 import axios from "axios";
-import { useDarkMode } from "./hooks";
+import { useDarkMode } from "../hooks";
 
 type RestaurantInfo = {
   id: string,

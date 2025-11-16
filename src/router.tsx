@@ -3,18 +3,18 @@ import {
   redirect,
 } from "react-router";
 
-import HomeView from './HomeView'
-import Login from "./Login";
-import IndexView from "./IndexView";
+import HomeView from './Kitchen/HomeView'
+import Login from "./Kitchen/Login";
+import IndexView from "./Kitchen/IndexView";
 import React from "react";
-import LandingPage from "./LandingPage";
-import OrderFoodPage from "./OrderFoodPage";
+import LandingPage from "./Customer/LandingPage";
+import OrderFoodPage from "./Customer/OrderFoodPage";
 
-const OrderManageView = React.lazy(() => import('./OrderManageView'))
-const FoodManageView = React.lazy(() => import('./FoodManageView'))
-const DeskManageView = React.lazy(() => import('./DeskManageView'))
-const AddDeskView = React.lazy(() => import('./AddDeskView'))
-const AddFoodView = React.lazy(() => import('./AddFoodView'))
+const OrderManageView = React.lazy(() => import('./Kitchen/OrderManageView'))
+const FoodManageView = React.lazy(() => import('./Kitchen/FoodManageView'))
+const DeskManageView = React.lazy(() => import('./Kitchen/DeskManageView'))
+const AddDeskView = React.lazy(() => import('./Kitchen/AddDeskView'))
+const AddFoodView = React.lazy(() => import('./Kitchen/AddFoodView'))
 // const OrderSuccess = React.lazy(() => import('./OrderSuccess'))
 
 const router = createBrowserRouter([

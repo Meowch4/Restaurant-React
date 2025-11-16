@@ -1,5 +1,5 @@
 import { useRef } from "react"
-import { useInput } from "./hooks"
+import { useInput } from "../hooks"
 import axios from "axios"
 import { useNavigate } from "react-router"
 
