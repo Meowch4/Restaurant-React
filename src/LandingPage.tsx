@@ -5,6 +5,8 @@ import { useState } from "react"
 import { useNavigate, useParams } from "react-router"
 import { deskInfoAtom } from "./store"
 import { useAtom } from "jotai"
+import { Checkbox } from "antd-mobile"
+import { useDarkMode } from "./hooks"
 
 function getDeskInfo(deskId: number | string) {
   return axios.get('/api/deskinfo?did=' + deskId)
@@ -21,6 +23,8 @@ function LandingPage() {
 
   const [,setDeskInfo] = useAtom(deskInfoAtom)
 
+  const [isDark, toggleDark] = useDarkMode()
+
   const { data, loading } = useRequest(getDeskInfo, {
     defaultParams: [params.deskId!],
     onSuccess: data => {
@@ -33,9 +37,15 @@ function LandingPage() {
   }
 
   return (
-    <div>
-      <h1>{ loading ? 'Loading...' : data.title + ':' + data.name }</h1>
-      <div className="flex flex-wrap gap-2">
+    <div className="flex flex-col items-center justify-center gap-4">
+      <h1 className="font-bold text-xl w-full bg-gray-100 dark:bg-black p-2 flex justify-around">
+        { loading ? 'Loading...' : data.title + ':' + data.name }
+        <span>
+          <Checkbox checked={isDark} onChange={toggleDark}/>
+          <span className="text-base pl-2">深色模式</span>
+        </span>
+      </h1>
+      <div className="grid grid-cols-4 justify-center gap-2 w-2/3 ">
         {
           new Array(12).fill('').map((_, idx) => {
             return (
@@ -43,7 +53,7 @@ function LandingPage() {
             key={idx}
             className={
               clsx(
-                "[&.active]:bg-blue-400 cursor-pointer border rounded w-8 h-8 flex items-center justify-center",
+                "[&.active]:bg-blue-500 bg-gray-100 dark:bg-black m-auto cursor-pointer border rounded w-8 h-8 flex items-center justify-center",
                 { active: customCount == idx + 1},
               )
             }
@@ -56,6 +66,7 @@ function LandingPage() {
         }
       </div>
       <button 
+      className="dark:bg-black"
       disabled={customCount == 0}
       onClick={() => startOrdering()}>开始点餐</button>
     </div>

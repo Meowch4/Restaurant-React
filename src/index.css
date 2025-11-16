@@ -10,7 +10,7 @@ input {
   height: 100dvh;
 }
 /* 伪类  选中了html元素*/
-:root {
+.dark:root {
   height: 100dvh;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -41,15 +41,8 @@ a:hover {
 body {
   margin: 0;
   height: 100dvh;
-  /* display: flex; */
-  /* place-items: center; */
   min-width: 320px;
   min-height: 100vh;
-}
-
-h1 {
-  /* font-size: 3.2em;
-  line-height: 1.1; */
 }
 
 button {
@@ -59,28 +52,31 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  /* background-color: #1a1a1a; */
-  @apply bg-slate-700;
+  /* @apply bg-slate-700; */
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+
+.dark {
+  button {
+    background-color: #1a1a1a;
+  }
+  button:hover {
+    border-color: #646cff;
+  }
+  button:focus,
+  button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+  }
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+:root {
+  color: #213547;
+  background-color: #ffffff;
+}
+a:hover {
+  color: #747bff;
+}
+button {
+  background-color: #f9f9f9;
 }

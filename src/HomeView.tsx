@@ -1,8 +1,9 @@
 import { useAtom } from "jotai";
 import { Suspense, useEffect, useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router";
+import { NavLink as Link, Outlet, useNavigate } from "react-router";
 import { isLoginAtom } from "./store";
 import axios from "axios";
+import { useDarkMode } from "./hooks";
 
 type RestaurantInfo = {
   id: string,
@@ -14,6 +15,8 @@ export default function HomeView() {
   const [isLogin] = useAtom(isLoginAtom)
   const navigate = useNavigate()
   const [userInfo, setUserInfo] = useState<null | RestaurantInfo>(null)
+
+  const [,,darkMode] = useDarkMode()
 
   useEffect(() => {
     axios.get('/api/userinfo').then(res => {
@@ -34,13 +37,14 @@ export default function HomeView() {
     <div className="h-full flex flex-col">
       <h1 className="border-b flex justify-between items-center p-2">
         <span className="font-bold text-xl px-4">{ userInfo?.title }</span>
+        <span>{darkMode}</span>
         <button>退出</button>
       </h1>
-      <div className="flex grow overflow-hidden">
-        <div className="w-48 p-4 border-r flex flex-col gap-2 items-center shrink-0">
-          <Link className="[&.active]:bg-slate-700 text-base block p-2" to={'/home/orders'}>订单管理</Link>
-          <Link className="[&.active]:bg-slate-700 text-base block p-2" to={'/home/foods'}>菜品管理</Link>
-          <Link className="[&.active]:bg-slate-700 text-base block p-2" to={'/home/desks'}>餐桌管理</Link>
+      <div className="flex grow">
+        <div className="w-48 border-r flex flex-col gap-2 items-center shrink-0">
+          <Link className="[&.active]:bg-slate-200 dark:[&.active]:bg-slate-700 w-full text-base block p-4 text-center" to={'/home/orders'}>订单管理</Link>
+          <Link className="[&.active]:bg-slate-200 dark:[&.active]:bg-slate-700 w-full text-base block p-4 text-center" to={'/home/foods'}>菜品管理</Link>
+          <Link className="[&.active]:bg-slate-200 dark:[&.active]:bg-slate-700 w-full text-base block p-4 text-center" to={'/home/desks'}>餐桌管理</Link>
         </div>
         
         <div className="grow p-4 overflow-auto">

@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { io, Socket } from "socket.io-client"
 import { SideBar, Checkbox, Stepper, Footer, Skeleton, Modal } from "antd-mobile"
 import _ from 'lodash'
+import { useDarkMode } from "./hooks"
 
 function getMenu(rId: number | string): Promise<Food[]> {
   return axios.get('/api/menu/restaurant/' + rId)
@@ -32,6 +33,8 @@ function OrderFoodPage() {
   const [checkedFood, updateCheckedFood] = useImmer<boolean[]>([])
 
   const [expand, {toggle}] = useToggle(true)
+
+  const [isDark, toggleDark] = useDarkMode()
 
   const { data: deskInfo, loading: deskLoading } = useRequest(getDeskInfo, {
     defaultParams: [params.deskId!],
@@ -174,6 +177,7 @@ function OrderFoodPage() {
   // 侧边栏当前激活项目的key
   const [activeKey, setActiveKey] = useState(Object.keys(groupedMenu)[0])
 
+  // 侧边栏监控滚动的函数
   const { run: handleScroll } = useThrottleFn(
     () => {
       // groupedMenu是一个形如{'肉类': '鱼香肉丝','糖醋排骨'}的对象
@@ -205,14 +209,6 @@ function OrderFoodPage() {
 
   const mainElementRef = useRef<HTMLDivElement>(null)
 
-  // useEffect(() => {
-  //   const mainElement = mainElementRef.current
-  //   if (!mainElement) return
-  //   mainElement.addEventListener('scroll', handleScroll)
-  //   return () => {
-  //     mainElement.removeEventListener('scroll', handleScroll)
-  //   }
-  // },[])
 
    // 这里有个if，记得把所有useMemo/useEffect放到它前面
   if (deskLoading || menuLoading) {
@@ -226,7 +222,13 @@ function OrderFoodPage() {
 
   return (
     <div className="h-full flex flex-col">
-      <h1 className="text-xl font-bold p-4 border-b">{ deskInfo.title } - { deskInfo.name }</h1>
+      <h1 className="text-xl font-bold p-4 border-b bg-white dark:bg-black flex justify-between">
+        { deskInfo.title } - { deskInfo.name }
+        <span>
+          <Checkbox checked={isDark} onChange={toggleDark}/>
+          <span className="pl-2 text-base">深色模式</span>
+        </span>
+      </h1>
       <div className="flex grow overflow-auto">
         <div>
           <SideBar
@@ -257,7 +259,7 @@ function OrderFoodPage() {
                 className=""
                 >
                   <h2 id={`anchor-${key}`} 
-                  className="z-50 sticky top-0 bg-slate-100 text-yellow-400 pt-2 text-xl font-bold">
+                  className="bg-gray-100 dark:bg-black z-50 sticky top-0 p-2 text-xl font-bold">
                     { key }
                   </h2>
                   <div className="space-y-4">
@@ -302,6 +304,7 @@ function OrderFoodPage() {
               )
             })
           }
+
           <div className="h-[calc(100%-187px)] ">
             <Footer label="没有更多了" className="bg-transparent"></Footer>
           </div>
@@ -331,9 +334,10 @@ function OrderFoodPage() {
           }
         </div>
 
-      <div className="fixed bottom-0 w-full p-2">
+      {/* 底部购物车悬浮条 */}
+      <div className="fixed z-[100] bottom-0 w-full p-2">
         <div data-detail="当前购物车详情" hidden={expand} className="divide-y ">
-          <div className="p-2 divide-y bg-slate-100 rounded-xl">
+          <div className="p-2 divide-y bg-slate-100 dark:bg-gray-800 rounded-xl">
           { // 购物车条目
             selectedFood()
             .map(entry => {
@@ -351,8 +355,8 @@ function OrderFoodPage() {
           }
           </div>
         </div>
-        <div className="bg-slate-100 h-16 rounded-full border-t flex items-center justify-between">
-          <button className="rounded-l-full h-16 w-20 text-base bg-yellow-400  relative" onClick={toggle}>
+        <div className="bg-slate-100 dark:bg-black h-16 rounded-full border-t flex items-center justify-between">
+          <button className="rounded-l-full h-16 w-20 text-base bg-yellow-400 dark:bg-orange-500 relative" onClick={toggle}>
             展开
             <span 
             hidden={selectedFoodSum() == 0} 
@@ -361,7 +365,7 @@ function OrderFoodPage() {
             </span>
           </button>
           <span className="text-lg font-bold">￥ <span className="text-3xl">{ totalPrice() }</span></span>
-          <button className="rounded-r-full h-16 w-20 text-base bg-yellow-400" onClick={ placeOrder }>下单</button>
+          <button className="rounded-r-full h-16 w-20 text-base bg-yellow-400 dark:bg-orange-500" onClick={ placeOrder }>下单</button>
         </div>
 
       </div>
