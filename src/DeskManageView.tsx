@@ -115,8 +115,9 @@ const DeskItem: React.FC<DeskItemProps> = observer(( {manager, desk, idx} ) => {
         </div>
       </div>
       <div className="p-2">
-        <QRCode bgColor="white" size={100} value={`https://10.3.3.3:5173/r/1/d/${desk.id}`}></QRCode>
-        {/* <img data-url={`https://10.3.3.3:5173/r/1/d/${desk.id}`} src={qrcodes[idx]} alt="" className="w-24 h-24" /> */}
+        <a href={`http://localhost:5173/r/1/d/${desk.id}`} target="_blank">
+          <QRCode bgColor="white" size={100} value={`http://localhost:5173/r/1/d/${desk.id}`}></QRCode>
+        </a>
       </div>
     </div>
   )
