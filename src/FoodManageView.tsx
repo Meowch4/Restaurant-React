@@ -44,7 +44,6 @@ function FoodManageView() {
 
   const items: TabsProps['items'] = Object.entries(manager.grouped).map(entry => {
     const [category, foods] = entry
-    console.log(entry)
     return {
       key: category,
       label: category,

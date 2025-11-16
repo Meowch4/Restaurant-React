@@ -1,4 +1,4 @@
-import { Checkbox } from "antd"
+import { Checkbox } from "antd-mobile"
 import { useCallback, useEffect, useMemo, useState } from "react"
 
 
@@ -22,12 +22,10 @@ export function useDarkMode() {
     if (isDark) {
       document.documentElement.classList.add('dark')
       document.documentElement.setAttribute('data-prefers-color-scheme', 'dark')
-      document.documentElement.setAttribute('data-prefers-color', 'dark')
       localStorage.isDark = 'true'
     } else {
       document.documentElement.classList.remove('dark')
       document.documentElement.removeAttribute('data-prefers-color-scheme')
-      document.documentElement.removeAttribute('data-prefers-color')
       localStorage.isDark = ''
     }
   }, [isDark])
@@ -38,7 +36,7 @@ export function useDarkMode() {
 
   const el = useMemo(() => {
     return (
-      <span>
+      <span className="flex items-center">
         <Checkbox checked={isDark} onChange={toggle}/>
         <span className="pl-2 text-base">深色模式</span>
       </span>

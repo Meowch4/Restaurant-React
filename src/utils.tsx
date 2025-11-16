@@ -1,4 +1,4 @@
-import { type Order } from './OrderManageView.tsx'
+import { type Order } from './types'
 
 export function printOrder(order: Order) {
   const iframe = document.createElement('iframe')
@@ -14,7 +14,7 @@ export function printOrder(order: Order) {
     <body>
       ${
         order.details.map(item => {
-          return `${item.food.name} - ${item.amount} - ${item.food.price}`
+          return `${item.food.name} - ${item.amount} - ${item.food.price} `
         })
       }
     </body>

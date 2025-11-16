@@ -50,7 +50,6 @@ function OrderFoodPage() {
     }
   })
 
-  console.log(deskInfo)
 
   // 让多个函数都能访问到client
   const clientRef = useRef<Socket | null>(null)
@@ -147,8 +146,6 @@ function OrderFoodPage() {
       return _.groupBy(menu, 'category')
     }
   }, [menu])
-
-  console.log(groupedMenu)
 
   // 这是返回选择数量大于0的菜，不管有没有check
   function selectedFood() {
