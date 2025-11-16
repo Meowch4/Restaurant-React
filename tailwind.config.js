@@ -8,5 +8,6 @@ export default {
     extend: {},
   },
   darkMode: 'selector',
+  important: true,
   plugins: [],
 }
