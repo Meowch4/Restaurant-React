@@ -5,6 +5,8 @@ import { observer } from "mobx-react"
 import axios from "axios"
 import { Link } from "react-router"
 import { useInput } from "./hooks"
+import _ from "lodash"
+import { Tabs, type TabsProps } from "antd"
 
 class FoodManager {
   foods: Food[] = []
@@ -19,6 +21,9 @@ class FoodManager {
   }
   deleteFood(idx: number) {
     this.foods.splice(idx, 1)
+  }
+  get grouped() {
+    return _.groupBy(this.foods, 'category')
   }
 }
 function FoodManageView() {
@@ -37,17 +42,37 @@ function FoodManageView() {
     }
   }, [manager])
 
+  const items: TabsProps['items'] = Object.entries(manager.grouped).map(entry => {
+    const [category, foods] = entry
+    console.log(entry)
+    return {
+      key: category,
+      label: category,
+      children:
+      <div>
+        {
+          foods.map((food, idx) => {
+            return <FoodItem key={food.id} manager={manager} foodItem={food} idx={idx}/>
+          })
+        }
+      </div>,
+    }
+  })
+
   return (
     <div>
       <span className="font-bold text-2xl">
         菜品管理
       </span>
       <Link to="/home/add-food" className="mx-4">添加菜品</Link>
-      {
-        manager.foods.map((food, idx) => {
-        return <FoodItem key={food.id} manager={manager} foodItem={food} idx={idx}/>
-      })
-      }
+      <Tabs items={items}/>
+      <div className="hidden">
+        {
+          manager.foods.map((food, idx) => {
+            return <FoodItem key={food.id} manager={manager} foodItem={food} idx={idx}/>
+          })
+        }
+      </div>
 
     </div>
   )
