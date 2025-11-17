@@ -1,73 +1,67 @@
-# React + TypeScript + Vite
+# Restaurant-React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+一个包含 *餐厅后台管理系统 + 用户点餐系统* 的前端项目，支持 订单管理、菜品管理、餐桌管理、点餐流程、**购物车实时更新**、**深色模式切换** 等核心功能。
 
-Currently, two official plugins are available:
+## 🌟 项目简介
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Restaurant-React 是一个模拟真实餐厅运营流程的前端项目，包括两个部分：
 
-## React Compiler
+* 后台管理系统（后厨端）：用于餐厅内部管理订单、菜品、餐桌。
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* 用户点餐系统（前台端）：用户可选择就餐人数、浏览菜品、添加购物车并提交订单。
 
-## Expanding the ESLint configuration
+## 🚀 技术栈
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+React 19
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+TypeScript
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Vite
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+React Router
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Tailwind CSS
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+自定义状态管理：使用jotai、immer、Mobx
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+WebSocket
+
+LocalStorage 存储深色模式偏好
+
+## ✨ 功能特性
+
+### 🧑‍🍳 后厨管理系统（Admin）
+
+订单管理：查看订单状态、菜品详情、用户就餐人数，**使用WebSocket实现订单实时更新及新增订单提醒**
+
+菜品管理：新增菜品、编辑信息（上传菜品图片）、删除菜品
+
+餐桌管理：查看餐桌状态、对应点餐二维码
+
+### 🍽️ 用户端（Client）
+
+选择就餐人数（落地页）
+
+浏览菜品分类列表
+
+**使用WebSocket实现购物车实时更新**
+
+下单流程完整
+
+## 🌙 深色模式
+
+**全局浅色 / 深色主题切换**
+
+自动保存用户偏好
+
+## 🧩 项目亮点
+
+共实现10+组件，**对项目进行模块化设计（组件层/页面层/hooks方法/类型声明）**，使整体结构清晰、易维护
+
+完整业务链路还原：从点餐到出单，涵盖真实业务流程
+
+实时交互体验良好：购物车即时同步、界面切换顺滑
+
+现代前端技术加持：React + TS + Tailwind，让项目结构专业清晰
+
+UI 细节丰富：深色模式、响应式布局、交互设计自然顺畅
