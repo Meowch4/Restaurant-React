@@ -1,4 +1,4 @@
-import { makeAutoObservable, observable } from "mobx"
+import { makeAutoObservable } from "mobx"
 import { type Food } from "../types"
 import { useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react"
@@ -6,7 +6,7 @@ import axios from "axios"
 import { Link } from "react-router"
 import { useInput } from "../hooks"
 import _ from "lodash"
-import { Tabs, type TabsProps } from "antd"
+import { Tabs } from "antd-mobile"
 
 class FoodManager {
   foods: Food[] = []
@@ -27,7 +27,7 @@ class FoodManager {
   }
 }
 function FoodManageView() {
-  const [manager] = useState(() => observable(new FoodManager()))
+  const [manager] = useState(() => new FoodManager())
 
   useEffect(() => {
     let ignore = false
@@ -42,21 +42,27 @@ function FoodManageView() {
     }
   }, [manager])
 
-  const items: TabsProps['items'] = Object.entries(manager.grouped).map(entry => {
+  const groups = Object.entries(manager.grouped)
+
+  if (groups.length === 0) {
+    return <div>加载中...</div>
+  }
+
+  const defaultActiveKey = groups[0][0]
+
+  const items = groups.map(entry => {
     const [category, foods] = entry
-    return {
-      key: category,
-      label: category,
-      children:
-      <div>
-        {
-          foods.map((food, idx) => {
-            return <FoodItem key={food.id} manager={manager} foodItem={food} idx={idx}/>
-          })
-        }
-      </div>,
-    }
+    return (
+        <Tabs.Tab title={category} key={category}>
+          {
+            foods.map((food, idx) => {
+              return <FoodItem key={food.id} manager={manager} foodItem={food} idx={idx}/>
+            })
+          }
+        </Tabs.Tab>
+    )
   })
+
 
   return (
     <div>
@@ -64,7 +70,9 @@ function FoodManageView() {
         菜品管理
       </span>
       <Link to="/home/add-food" className="mx-4">添加菜品</Link>
-      <Tabs items={items}/>
+      <Tabs defaultActiveKey={defaultActiveKey}>
+        {items}
+      </Tabs>
       <div className="hidden">
         {
           manager.foods.map((food, idx) => {
