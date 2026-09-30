@@ -5,8 +5,8 @@ import { isLoginAtom } from "../store"
 import { Link, useNavigate } from "react-router"
 
 export default function Login() {
-  const name = useInput('')
-  const password = useInput('')
+  const name = useInput('a')
+  const password = useInput('a')
   const captcha = useInput('')
   const navigate = useNavigate()
 
@@ -41,6 +41,7 @@ export default function Login() {
   
   return (
     <div>
+      <div className="m-2 text-sm text-slate-500">演示账号已预填：a / a</div>
       <div className="h-12 m-2 items-center flex">
         <label className="flex gap-2">
           <span className="w-12 inline-block text-right ">用户名</span>

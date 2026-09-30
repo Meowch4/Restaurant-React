@@ -68,6 +68,7 @@ const DeskItem: React.FC<DeskItemProps> = observer(( {manager, desk, idx} ) => {
 
   const name = useInput(desk.name)
   const capacity = useInput(String(desk.capacity))
+  const orderUrl = `${window.location.origin}/landing/r/1/d/${desk.id}`
 
   function editHandler() {
     axios.put(`/api/restaurant/1/desk/${desk.id}`, {
@@ -115,8 +116,8 @@ const DeskItem: React.FC<DeskItemProps> = observer(( {manager, desk, idx} ) => {
         </div>
       </div>
       <div className="p-2">
-        <a href={`http://localhost:5173/r/1/d/${desk.id}`} target="_blank">
-          <QRCode bgColor="white" size={100} value={`http://localhost:5173/r/1/d/${desk.id}`}></QRCode>
+        <a href={orderUrl} target="_blank" rel="noreferrer">
+          <QRCode bgColor="white" size={100} value={orderUrl}></QRCode>
         </a>
       </div>
     </div>

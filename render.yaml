@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: restaurant-react-demo
+    runtime: node
+    plan: free
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
+    startCommand: pnpm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: SESSION_SECRET
+        generateValue: true

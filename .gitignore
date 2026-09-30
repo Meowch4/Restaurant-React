@@ -8,6 +8,31 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+.pnpm-store
+backend/node_modules
+backend/runtime
+backend/dist
+backend/build
+backend/build-old
+backend/static
+backend/db/sqlite3.exe
+backend/db/*_xlsx
+backend/package-lock.json
+backend/pnpm-lock.yaml
+backend/index.html
+backend/test-io-seq.js
+backend/upload/02481305b73e5edda1f650655cc6c2b7
+backend/upload/1571901344442.png
+backend/upload/1571901489874.png
+backend/upload/1571902110922.png
+backend/upload/1571902314287.jpg
+backend/upload/1571902338407.png
+backend/upload/1695197074973.png
+backend/upload/1695198033918.png
+backend/upload/1695201758880.png
+backend/upload/a.html
+backend/upload/dda43dddd729cafc34b0e205ab54bd2a
+backend/upload/undefined.png
 
 dist-ssr
 *.local

@@ -56,7 +56,7 @@ function OrderFoodPage() {
   useEffect(() => {
     // 最开始的menu是undefined 所以把逻辑放在menu非空的if里
     if (menu) {
-      clientRef.current = io(`ws://${location.host}`, {
+      clientRef.current = io({
         path: '/desk',
         transports:['websocket', 'polling'],
         query: {
@@ -78,7 +78,7 @@ function OrderFoodPage() {
       clientRef.current.on('new food', (info: {desk: string, food: Food, amount: number}) => {
         const foodId = info.food.id
         const idx = menu!.findIndex(it => it.id == foodId)
-        if (idx > 0) {
+        if (idx >= 0) {
           updateFoodCount(foodCount => {
             foodCount[idx] = info.amount
           })

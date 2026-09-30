@@ -51,7 +51,7 @@ function OrderManageView() {
 
   // 利用ws实现实时下单功能
   useEffect(() => {
-    const client = io(`ws://${location.host}`, {
+    const client = io({
       path: '/restaurant',
       transports:['websocket', 'polling'],
       query: {
@@ -84,14 +84,14 @@ function OrderManageView() {
 
   async function confirmOrder(idx:number) {
     const order = manager.orders[idx]
-    await axios.put(`/api/restaurant/:rid/order/${order.id}/status`, {
+    await axios.put(`/api/restaurant/1/order/${order.id}/status`, {
       status: 'confirmed',
     })
     manager.changeOrderStatus(idx, 'confirmed')
   }
   async function completeOrder(idx:number) {
     const order = manager.orders[idx]
-    await axios.put(`/api/restaurant/:rid/order/${order.id}/status`, {
+    await axios.put(`/api/restaurant/1/order/${order.id}/status`, {
       status: 'completed',
     })
     manager.changeOrderStatus(idx, 'completed')

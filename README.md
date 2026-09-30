@@ -65,3 +65,35 @@ LocalStorage 存储深色模式偏好
 现代前端技术加持：React + TS + Tailwind，让项目结构专业清晰
 
 UI 细节丰富：深色模式、响应式布局、交互设计自然顺畅
+
+## 在线演示
+
+项目采用“开发时前后端分离、部署时同域运行”的方式：Vite 负责构建 React，Express 同时提供页面、API、菜品图片和 Socket.IO 服务。因此线上只需要一个网址，也不会遇到跨域 Cookie 或 HTTPS 下 WebSocket 失效的问题。
+
+- 顾客点餐入口：`/landing/r/1/d/1`
+- 后厨管理入口：`/login`
+- 演示账号：`a`
+- 演示密码：`a`
+
+演示环境使用可重置的 SQLite 数据。访客可以添加菜品、修改餐桌和提交订单；服务重新启动时会从仓库中的种子数据库恢复，适合作品展示，不用于保存真实业务数据。请勿在演示环境中填写真实个人信息。
+
+## 本地运行
+
+要求 Node.js 22.5 或更高版本，并启用 Corepack。
+
+```bash
+corepack enable
+pnpm install
+pnpm build
+pnpm start
+```
+
+启动后访问 `http://localhost:5002`。日常前端开发仍可运行 `pnpm dev`，Vite 会把 API 和 WebSocket 请求转发到本地 5002 端口。
+
+## 免费部署到 Render
+
+仓库根目录包含 `render.yaml`，推送到 GitHub 后可在 Render 中选择 **New > Blueprint** 并连接此仓库。Render 会自动读取构建和启动配置，并生成公开网址。
+
+部署完成后，将公开网址填写到本 README 的仓库简介和 Online Demo 位置。免费服务可能在空闲后休眠，首次打开需要稍等片刻；每次服务重启都会恢复演示数据。
+
+生产用途应将 SQLite 和本地上传目录替换为持久数据库及对象存储。
